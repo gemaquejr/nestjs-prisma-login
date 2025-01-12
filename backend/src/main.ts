@@ -1,8 +1,15 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { UserService } from './user/user.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  await app.listen(process.env.PORT ?? 3000);
+  const userService = app.get(UserService);
+  try {
+    await userService.createDefaultAdmin();
+  } catch (error) {
+    console.error('Failed to create default admin:', error);
+  }
+  await app.listen(3000);
 }
 bootstrap();
