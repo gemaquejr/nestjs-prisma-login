@@ -1,12 +1,13 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
+import { Role } from './role.enum';
 
 @Injectable()
 export class UserService {
   constructor(private prisma: PrismaService) {}
 
-  async findAllUsers() {
+  async findAll() {
     return await this.prisma.user.findMany({
       select: {
         id: true,
@@ -14,6 +15,23 @@ export class UserService {
         role: true,
       },
     });
+  }
+
+  async findOne(id: number) {
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        email: true,
+        role: true,
+      },
+    });
+
+    if (!user) {
+      throw new HttpException('Usuário não encontrado', HttpStatus.NOT_FOUND);
+    }
+
+    return user;
   }
 
   async createDefaultAdmin() {
@@ -48,7 +66,7 @@ export class UserService {
       data: {
         email: email,
         password: hashedPassword,
-        role: 'USER',
+        role: Role.USER,
       },
     });
     return user;

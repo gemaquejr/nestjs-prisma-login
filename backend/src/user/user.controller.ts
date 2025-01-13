@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
+import { Controller, Get, Post, Param, Body } from '@nestjs/common';
 import { UserService } from './user.service';
 
 @Controller('users')
@@ -6,8 +6,13 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
-  async getAllUsers() {
-    return await this.userService.findAllUsers();
+  async findAll() {
+    return await this.userService.findAll();
+  }
+
+  @Get(':id')
+  async findOne(@Param('id') id: string) {
+    return await this.userService.findOne(Number(id));
   }
 
   @Post('create')
