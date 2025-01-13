@@ -48,7 +48,6 @@ export class UserService {
           role: 'ADMIN',
         },
       });
-      console.log('Administrador criado com sucesso!');
     }
   }
 
